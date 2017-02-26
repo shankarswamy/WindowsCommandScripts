@@ -1,0 +1,28 @@
+
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\Folder\shell\Command_Prompt_Here]
+@="Command Prompt Here"
+[HKEY_CLASSES_ROOT\Folder\shell\Command_Prompt_Here\command]
+@="cmd.exe /k \"cd %1\""
+
+[HKEY_CLASSES_ROOT\Folder\shell\Power_Shell_Here]
+@="Power Shell Here"
+
+[HKEY_CLASSES_ROOT\Folder\shell\Power_Shell_Here\command]
+@="powershell.exe -NoLogo -NoExit -Command \"cd %1\""
+
+[HKEY_CLASSES_ROOT\Directory\shell\cygwinbash]
+@="Open Cygwin Bash Here"
+[HKEY_CLASSES_ROOT\Directory\shell\cygwinbash\command]
+@="c:\\cygwin\\bin\\bash.exe --login -i -c \"cd \\\"`cygpath -u '%L'`\\\";bash\""
+
+[HKEY_CLASSES_ROOT\Directory\shell\CommandPrompt] 
+@="Open Command Window Here" 
+[HKEY_CLASSES_ROOT\Directory\shell\CommandPrompt\command] 
+@="cmd.exe /k pushd %L" 
+
+[HKEY_CLASSES_ROOT\Drive\shell\CommandPrompt] 
+@="Open Command Window Here" 
+[HKEY_CLASSES_ROOT\Drive\shell\CommandPrompt\command] 
+@="cmd.exe /k pushd %L"
