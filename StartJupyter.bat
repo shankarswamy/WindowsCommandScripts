@@ -1,26 +1,48 @@
 @ECHO OFF
 
-SET "VirtualEnvDir=C:\Anaconda3\envs"
+SET "MyVEDir=C:\Anaconda3\envs"
 
-IF "%1" == "" (SET /P VirtualEnv= Enter Virtual Environment name to start Jupyter in: 
-IF VirtualEnv == "" (GOTO :ArgMissing)) ELSE ( SET VirtualEnv = %1 )
+IF "%1"=="" (
+     ECHO Enter Virtual Environment name to start Jupyter in 
+     SET /P MyVE= Or 'Enter' to start in the root Environment: 
+) ELSE ( SET MyVE="%1" )
 
-IF exist %VirtualEnvDir%\%VirtualEnv% (GOTO :StartVE) ELSE (GOTO :MissingVE)
+IF "%MyVE%"== """" ( 
+    GOTO ArgMissing ) 
 
-:StartVE
-Echo Starting Jupyter in Virtual Environment %VirtualEnv% 
-CALL activate %VirtualEnv%
-start jupyter notebook
-GOTO :EOF
+IF "%MyVE%"=="root" (
+    ECHO Starting Jupyter in the "root" Environment
+    GOTO StartVE)
 
-:MissingVE
-ECHO Missing the Virtual Environment %VirtualEnv%
-ECHO Bailing out!
-SET /P Tmp= Hit Enter to exit
-GOTO :EOF
+IF exist "%MyVEDir%\%MyVE%" (
+    ECHO Starting Jupyter in %MyVE% Environment
+    GOTO StartVE ) ELSE (
+    GOTO MissingVE   
+   )
+   
+REM If the execution got to here, it's a bug
+ECHO Something went wrong with the script. 
+ECHO Try again or better: fix it! :-(
 
 :ArgMissing
-ECHO Virtual Environment %VirtualEnv not found; bailing out
+ECHO Virtual Environment to start Jupyter not given.
+ECHO Starting in the Root Environment.
+GOTO StartVE
+
+:MissingVE
+ECHO Missing the Virtual Environment %MyVE%
+ECHO Starting Jupyter in the Root Environment.
+SET MyVE=""
+GOTO StartVE
+
+:StartVE
+IF NOT MyVE=="" ( CALL activate %MyVE% )
+start jupyter notebook
+GOTO EndScript
+
+:EndScript
+REM Reset all variables, in case we call this
+REM script again from the same shell
+SET MyVE=""
+SET MyVEDir=""
 GOTO :EOF
-
-
