@@ -32,7 +32,7 @@ ECHO Enter Virtual Environment name to start Jupyter from.
 ECHO Following VEs are available:
 CALL conda info --envs
 SET /P MyVE= Or 'Enter' to start in the root Environment:
-IF %MyVE%=="" ( GOTO StartVE ) ELSE (
+IF "%MyVE%"=="""" ( GOTO StartVE ) ELSE (
    GOTO CheckArgAndStart )     
 
 :ArgMissing
