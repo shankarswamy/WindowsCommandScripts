@@ -1,28 +1,39 @@
 @ECHO OFF
 
+ECHO Starting ... 
+
+REM If you use this script, remember to change the path to your
+REM Anaconda path below appropriately. Normally it should be
+REM C:\Program Files\Anaconda3\envs.
 SET "MyVEDir=C:\Anaconda3\envs"
 
 IF "%1"=="" (
-     ECHO Enter Virtual Environment name to start Jupyter in 
-     SET /P MyVE= Or 'Enter' to start in the root Environment: 
+     GOTO PromptBegin
 ) ELSE ( SET MyVE="%1" )
 
 IF "%MyVE%"== """" ( 
     GOTO ArgMissing ) 
 
 IF "%MyVE%"=="root" (
-    ECHO Starting Jupyter in the "root" Environment
     GOTO StartVE)
 
+:CheckArgAndStart
 IF exist "%MyVEDir%\%MyVE%" (
-    ECHO Starting Jupyter in %MyVE% Environment
     GOTO StartVE ) ELSE (
     GOTO MissingVE   
    )
    
 REM If the execution got to here, it's a bug
 ECHO Something went wrong with the script. 
-ECHO Try again or better: fix it! :-(
+ECHO Try again or better: fix the script and try again! :-(
+
+:PromptBegin
+ECHO Enter Virtual Environment name to start Jupyter from.
+ECHO Following VEs are available:
+CALL conda info --envs
+SET /P MyVE= Or 'Enter' to start in the root Environment:
+IF %MyVE%=="" ( GOTO StartVE ) ELSE (
+   GOTO CheckArgAndStart )     
 
 :ArgMissing
 ECHO Virtual Environment to start Jupyter not given.
@@ -31,12 +42,15 @@ GOTO StartVE
 
 :MissingVE
 ECHO Missing the Virtual Environment %MyVE%
-ECHO Starting Jupyter in the Root Environment.
-SET MyVE=""
-GOTO StartVE
+GOTO PromptBegin
 
 :StartVE
-IF NOT MyVE=="" ( CALL activate %MyVE% )
+IF %MyVE%=="" ( 
+    ECHO Starting Jupyter in "root" Environment ...
+    CALL deactivate
+    ) ELSE (
+    ECHO Starting Jupyter in %MyVE% Environment ...
+    CALL activate %MyVE% )
 start jupyter notebook
 GOTO EndScript
 
