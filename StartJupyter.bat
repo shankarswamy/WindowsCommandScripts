@@ -15,7 +15,7 @@ IF "%MyVE%"== """" (
     GOTO ArgMissing ) 
 
 IF "%MyVE%"=="root" (
-    GOTO StartVE)
+    GOTO StartVE )
 
 :CheckArgAndStart
 IF exist "%MyVEDir%\%MyVE%" (
@@ -29,10 +29,11 @@ ECHO Try again or better: fix the script and try again! :-(
 
 :PromptBegin
 ECHO Enter Virtual Environment name to start Jupyter from.
-ECHO Following VEs are available:
+ECHO Following VEs are available (wait a few seconds ...):
 CALL conda info --envs
 SET /P MyVE= Or 'Enter' to start in the root Environment:
-IF "%MyVE%"=="""" ( GOTO StartVE ) ELSE (
+IF "%MyVE%"=="""" (
+   GOTO StartVE ) ELSE (
    GOTO CheckArgAndStart )     
 
 :ArgMissing
@@ -45,7 +46,7 @@ ECHO Missing the Virtual Environment %MyVE%
 GOTO PromptBegin
 
 :StartVE
-IF %MyVE%=="" ( 
+IF "%MyVE%"=="" ( 
     ECHO Starting Jupyter in "root" Environment ...
     CALL deactivate
     ) ELSE (
