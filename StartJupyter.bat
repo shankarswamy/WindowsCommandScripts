@@ -1,30 +1,35 @@
 @ECHO OFF
 
-ECHO Starting ... 
+ECHO Starting ...
 
 REM If you use this script, remember to change the path to your
 REM Anaconda path below appropriately. Normally it should be
-REM C:\Program Files\Anaconda3\envs.
-SET "MyVEDir=C:\Anaconda3\envs"
-
+REM C:\Program Files\Anaconda3\envs.  It is also found at
+REM C:\Users\shankar\AppData\Local\conda\conda\envs\ - not sure how
+REM at two locations!
+SET "MyVEDir1=C:\ProgramData\Anaconda3\envs"
+SET "MyVEDir2=C:\Users\shankar\AppData\Local\conda\conda\envs\"
 IF "%1"=="" (
      GOTO PromptBegin
 ) ELSE ( SET MyVE="%1" )
 
-IF "%MyVE%"== """" ( 
-    GOTO ArgMissing ) 
+IF "%MyVE%"== """" (
+    GOTO ArgMissing )
 
 IF "%MyVE%"=="root" (
     GOTO StartVE )
 
 :CheckArgAndStart
-IF exist "%MyVEDir%\%MyVE%" (
+IF exist "%MyVEDir1%\%MyVE%" (
     GOTO StartVE ) ELSE (
-    GOTO MissingVE   
-   )
-   
+    IF exist "%MyVEDir2%\%MyVE%" (
+        GOTO StartVE
+    ) ELSE (
+    GOTO MissingVE
+   ))
+
 REM If the execution got to here, it's a bug
-ECHO Something went wrong with the script. 
+ECHO Something went wrong with the script.
 ECHO Try again or better: fix the script and try again! :-(
 
 :PromptBegin
@@ -34,7 +39,7 @@ CALL conda info --envs
 SET /P MyVE= Or 'Enter' to start in the root Environment:
 IF "%MyVE%"=="""" (
    GOTO StartVE ) ELSE (
-   GOTO CheckArgAndStart )     
+   GOTO CheckArgAndStart )
 
 :ArgMissing
 ECHO Virtual Environment to start Jupyter not given.
@@ -46,7 +51,7 @@ ECHO Missing the Virtual Environment %MyVE%
 GOTO PromptBegin
 
 :StartVE
-IF "%MyVE%"=="" ( 
+IF "%MyVE%"=="" (
     ECHO Starting Jupyter in "root" Environment ...
     CALL deactivate
     ) ELSE (
@@ -59,5 +64,6 @@ GOTO EndScript
 REM Reset all variables, in case we call this
 REM script again from the same shell
 SET MyVE=""
-SET MyVEDir=""
-GOTO :EOF
+SET MyVEDir1=""
+SET MyVEDir2=""
+EXIT
